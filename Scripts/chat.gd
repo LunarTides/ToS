@@ -21,9 +21,10 @@ func _on_input_submitted(new_text):
 
 @rpc("any_peer", "call_local", "unreliable", 1)
 func add_chat(player_id: int, player_name: String, text: String):
-	# TODO: Update existing element if no space
+	# TODO: Save messages to a history
 	var messages = $Panel/VBoxContainer.get_children()
 	
+	# If there is no space, remove the first message
 	if messages.size() >= max_messages:
 		messages[0].queue_free()
 	
@@ -33,7 +34,10 @@ func add_chat(player_id: int, player_name: String, text: String):
 	
 	if player_id != User.id:
 		# If the text contains the user's id or name, make the background color yellow
-		if text.contains(str(User.id)) or text.to_lower().contains(User.username.to_lower()):
+		var id = str(User.id)
+		var containsId = text.begins_with(id) or text.ends_with(id) or text.contains(" %s " % id)
+
+		if containsId or text.to_lower().contains(User.username.to_lower()):
 			prefix += "[bgcolor=#cdcd13]"
 	
 	text_node.bbcode_enabled = true
