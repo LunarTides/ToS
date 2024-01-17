@@ -1,0 +1,8 @@
+ToS
+ - Chat
+ - Roles
+  - Abilities
+   - Can target anyone
+   - Can target self
+   - Can use in different times of day/night
+ - Day/Night cycle
