@@ -1,28 +1,20 @@
 extends Control
 
 @onready var input = $Panel/LineEdit
+@onready var message_container = $Panel/VBoxContainer
+
 @export var max_messages: int
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
 
 func _on_input_submitted(new_text):
 	# Broadcast the text to the server
 	add_chat.rpc(User.id, User.username, new_text)
 	
-	$Panel/LineEdit.text = ""
+	input.text = ""
 
 @rpc("any_peer", "call_local", "unreliable", 1)
 func add_chat(player_id: int, player_name: String, text: String):
 	# TODO: Save messages to a history
-	var messages = $Panel/VBoxContainer.get_children()
+	var messages = message_container.get_children()
 	
 	# If there is no space, remove the first message
 	if messages.size() >= max_messages:

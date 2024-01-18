@@ -49,15 +49,10 @@ func create_game():
 	multiplayer.multiplayer_peer = peer
 
 	players_loaded += 1
-	Game.assign_id(players_loaded)
+	Game.assign_id(1)
 
 	players[1] = player_info
 	player_connected.emit(1, player_info)
-
-
-func remove_multiplayer_peer():
-	multiplayer.multiplayer_peer = null
-
 
 # When the server decides to start the game from a UI scene,
 # do Lobby.load_game.rpc(filepath)
@@ -65,27 +60,24 @@ func remove_multiplayer_peer():
 func load_game(game_scene_path):
 	get_tree().change_scene_to_file(game_scene_path)
 
-
-# Every peer will call this when they have loaded the game scene.
-@rpc("any_peer", "call_local", "reliable")
-func player_loaded():
-	if multiplayer.is_server():
-		$Game.start_game()
-
-
 # When a peer connects, send them my player info.
 # This allows transfer of all desired data for each player, not only the unique ID.
 func _on_player_connected(id):
-	if multiplayer.is_server():
-		players_loaded += 1
-		Game.assign_id.rpc_id(id, players_loaded)
+	players_loaded += 1
+	Game.assign_id(id)
 
-	_register_player.rpc_id(id, player_info)
+	if multiplayer.is_server():
+		_register_player.rpc_id(id, player_info, players_loaded)
+	else:
+		_register_player.rpc_id(id, player_info, null)
 
 
 @rpc("any_peer", "reliable")
-func _register_player(new_player_info):
+func _register_player(new_player_info, new_players_loaded):
 	var new_player_id = multiplayer.get_remote_sender_id()
+	
+	if new_players_loaded != null:
+		players_loaded = new_players_loaded
 	
 	players[new_player_id] = new_player_info
 	player_connected.emit(new_player_id, new_player_info)

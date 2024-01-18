@@ -59,5 +59,41 @@ text = "Connect"
 layout_mode = 2
 text = "Host"
 
+[node name="Text" type="SplitContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -84.0
+offset_right = 45.0
+offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Wait" type="Label" parent="Text"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Please Wait..."
+
+[node name="Players" type="Label" parent="Text"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Players Connected: %s"
+
+[node name="InfoPopup" type="PopupMenu" parent="."]
+transparent_bg = true
+initial_position = 2
+size = Vector2i(217, 100)
+always_on_top = true
+transparent = true
+item_count = 1
+item_0/text = ""
+item_0/id = 0
+item_0/separator = true
+
 [connection signal="pressed" from="Buttons/ConnectButton" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="Buttons/HostButton" to="." method="_on_host_button_pressed"]
